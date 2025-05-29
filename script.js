@@ -313,4 +313,53 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         });
     });
+
+    // MSM Lead and MSM Name functionality
+    const msmLeadSelect = document.querySelector('select:first-of-type');
+    const msmNameSelect = msmLeadSelect.nextElementSibling;
+    
+    // MSM team structure
+    const msmTeamStructure = {
+        'Aiko Lista': ['Valerie Corson', 'Brenden Porcher'],
+        'Arnaud Bonnet': ['Elise Leben', 'Gabrielle Basah'],
+        'Tyler Cuddihey': ['Hannah Breese', 'Cait Malaba'],
+        'Jared Fraser': ['Kate Tratten', 'Molly Sovran'],
+        'Nikole Gabriel-Brooks': ['Paris Colopy', 'Sarah Morgan'],
+        'Kasia Mycek': ['Tom Mifflin', 'Vianna Saldanha'],
+        'Megan Schmidling': ['Vik Klein', 'Andy Li'],
+        'Amy Franklin': ['Brittney Canning', 'Charlotte Alimanestianu'],
+        'Niresan Seevaratnam': ['Leena Di Leonardo', 'Paulina Lizewski'],
+        'Jayson Brown': ['Rebecca Hill']
+    };
+
+    // Store all MSM options for reset
+    const allMsmOptions = Array.from(msmNameSelect.options).slice(1);  // Skip the "Select MSM" option
+
+    msmLeadSelect.addEventListener('change', function() {
+        const selectedLead = this.value;
+        
+        // Clear current MSM options
+        while (msmNameSelect.options.length > 1) {  // Keep the "Select MSM" option
+            msmNameSelect.remove(1);
+        }
+        
+        if (selectedLead === 'Select MSM Lead') {
+            // Add all MSM options back
+            allMsmOptions.forEach(option => {
+                msmNameSelect.add(option.cloneNode(true));
+            });
+        } else {
+            // Add only MSMs for selected lead
+            const teamMembers = msmTeamStructure[selectedLead] || [];
+            teamMembers.forEach(member => {
+                const option = document.createElement('option');
+                option.text = member;
+                option.value = member;
+                msmNameSelect.add(option);
+            });
+        }
+        
+        // Reset MSM selection
+        msmNameSelect.value = 'Select MSM';
+    });
 }); 
