@@ -373,4 +373,56 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Reset MSM selection
         msmNameSelect.value = 'Select MSM';
     });
+
+    // Save form data to localStorage
+    function saveFormData() {
+        const formData = {
+            msmLead: document.querySelector('select:contains("MSM Lead Name")').value,
+            msm: document.querySelector('select:contains("MSM Name")').value,
+            dateRange: document.querySelector('select:contains("Date Range")').value,
+            region: document.querySelector('select:contains("Region")').value,
+            segment: document.querySelector('select:contains("Merchant Segment")').value,
+            merchant: document.querySelector('.merchant-overview select').value,
+            coachingAction: document.getElementById('actionSelect').value,
+            gmvGrowth: document.querySelector('.gmv-growth select').value,
+            crossSell: document.querySelector('select:contains("Enable Cross-Sell")').value
+        };
+        localStorage.setItem('msmCopilotData', JSON.stringify(formData));
+    }
+
+    // Load form data from localStorage
+    function loadFormData() {
+        const savedData = localStorage.getItem('msmCopilotData');
+        if (savedData) {
+            const formData = JSON.parse(savedData);
+            // Populate form fields
+            document.querySelector('select:contains("MSM Lead Name")').value = formData.msmLead;
+            document.querySelector('select:contains("MSM Name")').value = formData.msm;
+            document.querySelector('select:contains("Date Range")').value = formData.dateRange;
+            document.querySelector('select:contains("Region")').value = formData.region;
+            document.querySelector('select:contains("Merchant Segment")').value = formData.segment;
+            document.querySelector('.merchant-overview select').value = formData.merchant;
+            document.getElementById('actionSelect').value = formData.coachingAction;
+            document.querySelector('.gmv-growth select').value = formData.gmvGrowth;
+            document.querySelector('select:contains("Enable Cross-Sell")').value = formData.crossSell;
+        }
+    }
+
+    // Add event listeners to save data when form fields change
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load saved data when page loads
+        loadFormData();
+
+        // Add change event listeners to all form elements
+        const formElements = document.querySelectorAll('select');
+        formElements.forEach(element => {
+            element.addEventListener('change', saveFormData);
+        });
+
+        // Save data when AI Assistant input changes
+        const aiInput = document.querySelector('.ai-assistant-input');
+        if (aiInput) {
+            aiInput.addEventListener('input', saveFormData);
+        }
+    });
 }); 
