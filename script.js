@@ -53,6 +53,64 @@ document.addEventListener('DOMContentLoaded', async function() {
     const tabs = document.querySelectorAll('.tab-button');
     const trainingPanel = document.getElementById('training-panel');
     const pillarsSection = document.querySelector('.grid.grid-cols-3');
+    const businessOneThingPanel = document.createElement('div');
+    const craftOneThingPanel = document.createElement('div');
+
+    // Initialize Business 1 Thing Panel
+    businessOneThingPanel.id = 'business-one-thing-panel';
+    businessOneThingPanel.className = 'hidden mt-6';
+    businessOneThingPanel.innerHTML = `
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Business 1 Thing Focus</h2>
+            <div class="space-y-4">
+                <div class="border-b pb-4">
+                    <h3 class="font-medium mb-2">Current Focus Area</h3>
+                    <div class="bg-purple-50 p-4 rounded">
+                        <p class="text-purple-800 font-medium">Drive Merchant Growth</p>
+                        <p class="text-sm text-purple-600 mt-2">Focus on increasing merchant GMV through strategic account planning and stakeholder management.</p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-medium mb-2">Key Actions</h3>
+                    <ul class="text-sm space-y-2">
+                        <li>• Develop comprehensive account plans</li>
+                        <li>• Execute quarterly business reviews</li>
+                        <li>• Track and measure success metrics</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Initialize Craft 1 Thing Panel
+    craftOneThingPanel.id = 'craft-one-thing-panel';
+    craftOneThingPanel.className = 'hidden mt-6';
+    craftOneThingPanel.innerHTML = `
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Craft 1 Thing Focus</h2>
+            <div class="space-y-4">
+                <div class="border-b pb-4">
+                    <h3 class="font-medium mb-2">Current Focus Area</h3>
+                    <div class="bg-purple-50 p-4 rounded">
+                        <p class="text-purple-800 font-medium">Strategic Discovery</p>
+                        <p class="text-sm text-purple-600 mt-2">Enhance discovery skills to better understand merchant needs and opportunities.</p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-medium mb-2">Key Actions</h3>
+                    <ul class="text-sm space-y-2">
+                        <li>• Practice effective questioning techniques</li>
+                        <li>• Document merchant insights systematically</li>
+                        <li>• Develop targeted solution proposals</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Add panels to the document
+    document.querySelector('.container.mx-auto.p-6').appendChild(businessOneThingPanel);
+    document.querySelector('.container.mx-auto.p-6').appendChild(craftOneThingPanel);
 
     tabs.forEach(tab => {
         tab.addEventListener('click', function() {
@@ -66,13 +124,30 @@ document.addEventListener('DOMContentLoaded', async function() {
             this.classList.add('active', 'border-purple-600', 'text-purple-600');
             this.classList.remove('text-gray-500', 'border-transparent');
 
-            // Show/hide appropriate content
-            if (this.textContent.trim() === 'Training & Updates') {
-                trainingPanel.classList.remove('hidden');
-                pillarsSection.classList.add('hidden');
-            } else {
-                trainingPanel.classList.add('hidden');
-                pillarsSection.classList.remove('hidden');
+            // Hide all panels
+            trainingPanel.classList.add('hidden');
+            pillarsSection.classList.add('hidden');
+            businessOneThingPanel.classList.add('hidden');
+            craftOneThingPanel.classList.add('hidden');
+
+            // Show appropriate content based on tab
+            const tabText = this.textContent.trim();
+            switch(tabText) {
+                case 'Training & Updates':
+                    trainingPanel.classList.remove('hidden');
+                    break;
+                case 'Business Skills':
+                    pillarsSection.classList.remove('hidden');
+                    break;
+                case 'Business 1 Thing':
+                    businessOneThingPanel.classList.remove('hidden');
+                    break;
+                case 'Craft 1 Thing':
+                    craftOneThingPanel.classList.remove('hidden');
+                    break;
+                case 'Craft Skills':
+                    pillarsSection.classList.remove('hidden');
+                    break;
             }
         });
     });
