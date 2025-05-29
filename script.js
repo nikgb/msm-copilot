@@ -177,15 +177,26 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     executeButton.addEventListener('click', function() {
         const selectedAction = actionSelect.value;
-        if (selectedAction !== 'Select Action') {
+        if (selectedAction !== 'Select Coaching Action') {
             // Simulate action execution
             this.innerHTML = 'Processing...';
             this.disabled = true;
             
+            // Coaching action responses
+            const coachingResponses = {
+                'Generate Coaching Plan': 'Creating personalized coaching plan based on MSM performance data...',
+                'Schedule 1:1 Session': 'Opening calendar to schedule next coaching session...',
+                'Review Call Recording': 'Loading latest call recordings for review...',
+                'Create Development Plan': 'Generating development plan template with key focus areas...',
+                'Track Coaching Progress': 'Loading coaching metrics and progress dashboard...',
+                'Set SMART Goals': 'Opening SMART goals framework with current metrics...',
+                'Document Coaching Notes': 'Opening coaching notes template with action items...'
+            };
+            
             setTimeout(() => {
-                this.innerHTML = 'Execute Action';
+                this.innerHTML = 'Start Coaching Action';
                 this.disabled = false;
-                alert(`Action executed: ${selectedAction}`);
+                alert(coachingResponses[selectedAction] || `Starting: ${selectedAction}`);
             }, 1500);
         }
     });
