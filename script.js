@@ -647,7 +647,29 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
 
-        // Initialize progress trackers for both Business and Craft sections
+        // Helper function to update progress colors and text
+        function updateProgressColors(value, progressBar, progressText) {
+            // Remove existing color classes
+            progressBar.classList.remove('bg-red-500', 'bg-yellow-500', 'bg-purple-500');
+            progressText.classList.remove('text-red-600', 'text-yellow-600', 'text-purple-600');
+            
+            // Add appropriate color classes based on value
+            if (value < 50) {
+                progressBar.classList.add('bg-red-500');
+                progressText.classList.add('text-red-600');
+            } else if (value < 75) {
+                progressBar.classList.add('bg-yellow-500');
+                progressText.classList.add('text-yellow-600');
+            } else {
+                progressBar.classList.add('bg-purple-500');
+                progressText.classList.add('text-purple-600');
+            }
+            
+            // Update width and text
+            progressBar.style.width = `${value}%`;
+            progressText.textContent = `${value}%`;
+        }
+
         ['business', 'craft'].forEach(type => {
             const progressSlider = document.getElementById(`${type}-progress-slider`);
             const progressText = document.getElementById(`${type}-progress-text`);
@@ -655,83 +677,56 @@ document.addEventListener('DOMContentLoaded', async function() {
             const targetDate = document.getElementById(`${type}-target-date`);
             const addMilestoneBtn = document.getElementById(`add-${type}-milestone`);
 
-            // Update progress when slider changes
-            progressSlider.addEventListener('input', () => {
-                const value = progressSlider.value;
-                progressText.textContent = `${value}%`;
-                progressBar.style.width = `${value}%`;
-                
-                // Update color based on progress value
-                if (value < 50) {
-                    progressBar.classList.remove('bg-purple-500', 'bg-yellow-500');
-                    progressBar.classList.add('bg-red-500');
-                    progressText.classList.remove('text-purple-600', 'text-yellow-600');
-                    progressText.classList.add('text-red-600');
-                } else if (value < 75) {
-                    progressBar.classList.remove('bg-purple-500', 'bg-red-500');
-                    progressBar.classList.add('bg-yellow-500');
-                    progressText.classList.remove('text-purple-600', 'text-red-600');
-                    progressText.classList.add('text-yellow-600');
+            if (progressSlider && progressText && progressBar) {
+                // Add input event listener for real-time updates
+                progressSlider.addEventListener('input', () => {
+                    const value = parseInt(progressSlider.value);
+                    updateProgressColors(value, progressBar, progressText);
+                    localStorage.setItem(`${type}-progress`, JSON.stringify({ value }));
+                });
+
+                // Load saved progress
+                const savedProgress = localStorage.getItem(`${type}-progress`);
+                if (savedProgress) {
+                    const progress = JSON.parse(savedProgress);
+                    progressSlider.value = progress.value;
+                    updateProgressColors(progress.value, progressBar, progressText);
                 } else {
-                    progressBar.classList.remove('bg-red-500', 'bg-yellow-500');
-                    progressBar.classList.add('bg-purple-500');
-                    progressText.classList.remove('text-red-600', 'text-yellow-600');
-                    progressText.classList.add('text-purple-600');
+                    // Set default values
+                    const defaultValue = type === 'business' ? 75 : 60;
+                    progressSlider.value = defaultValue;
+                    updateProgressColors(defaultValue, progressBar, progressText);
                 }
 
-                // Add transition effect to the progress bar
+                // Add transition styles
                 progressBar.style.transition = 'width 0.3s ease-in-out, background-color 0.3s ease-in-out';
-                
-                localStorage.setItem(`${type}-progress`, JSON.stringify({ value }));
-            });
-
-            // Load saved progress with color updates
-            const savedProgress = localStorage.getItem(`${type}-progress`);
-            if (savedProgress) {
-                const progress = JSON.parse(savedProgress);
-                progressSlider.value = progress.value;
-                progressText.textContent = `${progress.value}%`;
-                progressBar.style.width = `${progress.value}%`;
-                
-                // Set initial color based on saved progress
-                if (progress.value < 50) {
-                    progressBar.classList.remove('bg-purple-500', 'bg-yellow-500');
-                    progressBar.classList.add('bg-red-500');
-                    progressText.classList.remove('text-purple-600', 'text-yellow-600');
-                    progressText.classList.add('text-red-600');
-                } else if (progress.value < 75) {
-                    progressBar.classList.remove('bg-purple-500', 'bg-red-500');
-                    progressBar.classList.add('bg-yellow-500');
-                    progressText.classList.remove('text-purple-600', 'text-red-600');
-                    progressText.classList.add('text-yellow-600');
-                } else {
-                    progressBar.classList.remove('bg-red-500', 'bg-yellow-500');
-                    progressBar.classList.add('bg-purple-500');
-                    progressText.classList.remove('text-red-600', 'text-yellow-600');
-                    progressText.classList.add('text-purple-600');
-                }
             }
 
             // Load saved target date
-            const savedDate = localStorage.getItem(`${type}-target-date`);
-            if (savedDate) {
-                targetDate.value = savedDate;
+            if (targetDate) {
+                const savedDate = localStorage.getItem(`${type}-target-date`);
+                if (savedDate) {
+                    targetDate.value = savedDate;
+                }
+
+                targetDate.addEventListener('change', () => {
+                    localStorage.setItem(`${type}-target-date`, targetDate.value);
+                });
             }
 
-            // Save target date when changed
-            targetDate.addEventListener('change', () => {
-                localStorage.setItem(`${type}-target-date`, targetDate.value);
-            });
-
-            // Add new milestone when button is clicked
-            addMilestoneBtn.addEventListener('click', () => {
-                const milestonesDiv = document.getElementById(`${type}-milestones`);
-                milestonesDiv.appendChild(createMilestoneElement(type));
-                saveMilestones(type);
-            });
-
-            // Load saved milestones
-            loadMilestones(type);
+            // Initialize milestones
+            if (addMilestoneBtn) {
+                addMilestoneBtn.addEventListener('click', () => {
+                    const milestonesDiv = document.getElementById(`${type}-milestones`);
+                    if (milestonesDiv) {
+                        milestonesDiv.appendChild(createMilestoneElement(type));
+                        saveMilestones(type);
+                    }
+                });
+                
+                // Load existing milestones
+                loadMilestones(type);
+            }
         });
     }
 
