@@ -655,13 +655,61 @@ document.addEventListener('DOMContentLoaded', async function() {
             const targetDate = document.getElementById(`${type}-target-date`);
             const addMilestoneBtn = document.getElementById(`add-${type}-milestone`);
 
-            // Load saved progress
+            // Update progress when slider changes
+            progressSlider.addEventListener('input', () => {
+                const value = progressSlider.value;
+                progressText.textContent = `${value}%`;
+                progressBar.style.width = `${value}%`;
+                
+                // Update color based on progress value
+                if (value < 50) {
+                    progressBar.classList.remove('bg-purple-500', 'bg-yellow-500');
+                    progressBar.classList.add('bg-red-500');
+                    progressText.classList.remove('text-purple-600', 'text-yellow-600');
+                    progressText.classList.add('text-red-600');
+                } else if (value < 75) {
+                    progressBar.classList.remove('bg-purple-500', 'bg-red-500');
+                    progressBar.classList.add('bg-yellow-500');
+                    progressText.classList.remove('text-purple-600', 'text-red-600');
+                    progressText.classList.add('text-yellow-600');
+                } else {
+                    progressBar.classList.remove('bg-red-500', 'bg-yellow-500');
+                    progressBar.classList.add('bg-purple-500');
+                    progressText.classList.remove('text-red-600', 'text-yellow-600');
+                    progressText.classList.add('text-purple-600');
+                }
+
+                // Add transition effect to the progress bar
+                progressBar.style.transition = 'width 0.3s ease-in-out, background-color 0.3s ease-in-out';
+                
+                localStorage.setItem(`${type}-progress`, JSON.stringify({ value }));
+            });
+
+            // Load saved progress with color updates
             const savedProgress = localStorage.getItem(`${type}-progress`);
             if (savedProgress) {
                 const progress = JSON.parse(savedProgress);
                 progressSlider.value = progress.value;
                 progressText.textContent = `${progress.value}%`;
                 progressBar.style.width = `${progress.value}%`;
+                
+                // Set initial color based on saved progress
+                if (progress.value < 50) {
+                    progressBar.classList.remove('bg-purple-500', 'bg-yellow-500');
+                    progressBar.classList.add('bg-red-500');
+                    progressText.classList.remove('text-purple-600', 'text-yellow-600');
+                    progressText.classList.add('text-red-600');
+                } else if (progress.value < 75) {
+                    progressBar.classList.remove('bg-purple-500', 'bg-red-500');
+                    progressBar.classList.add('bg-yellow-500');
+                    progressText.classList.remove('text-purple-600', 'text-red-600');
+                    progressText.classList.add('text-yellow-600');
+                } else {
+                    progressBar.classList.remove('bg-red-500', 'bg-yellow-500');
+                    progressBar.classList.add('bg-purple-500');
+                    progressText.classList.remove('text-red-600', 'text-yellow-600');
+                    progressText.classList.add('text-purple-600');
+                }
             }
 
             // Load saved target date
@@ -669,14 +717,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (savedDate) {
                 targetDate.value = savedDate;
             }
-
-            // Update progress when slider changes
-            progressSlider.addEventListener('input', () => {
-                const value = progressSlider.value;
-                progressText.textContent = `${value}%`;
-                progressBar.style.width = `${value}%`;
-                localStorage.setItem(`${type}-progress`, JSON.stringify({ value }));
-            });
 
             // Save target date when changed
             targetDate.addEventListener('change', () => {
