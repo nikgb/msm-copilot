@@ -70,6 +70,29 @@ document.addEventListener('DOMContentLoaded', async function() {
                         <p class="text-sm text-purple-600 mt-2">Focus on increasing merchant GMV through strategic account planning and stakeholder management.</p>
                     </div>
                 </div>
+                <div class="border-b pb-4">
+                    <h3 class="font-medium mb-2">Goal Progress</h3>
+                    <div class="relative pt-1">
+                        <div class="flex mb-2 items-center justify-between">
+                            <div>
+                                <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-purple-600 bg-purple-200">
+                                    Progress
+                                </span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-semibold inline-block text-purple-600">
+                                    75%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-purple-200">
+                            <div style="width:75%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-500"></div>
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            Target Completion: June 30, 2024
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <h3 class="font-medium mb-2">Key Actions</h3>
                     <ul class="text-sm space-y-2">
