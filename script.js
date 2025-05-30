@@ -85,17 +85,30 @@ document.addEventListener('DOMContentLoaded', async function() {
                                     Progress
                                 </span>
                             </div>
-                            <div class="text-right">
-                                <span class="text-xs font-semibold inline-block text-purple-600">
+                            <div class="text-right flex items-center space-x-2">
+                                <input type="range" min="0" max="100" value="75" class="progress-slider" id="business-progress-slider">
+                                <span class="text-xs font-semibold inline-block text-purple-600" id="business-progress-text">
                                     75%
                                 </span>
                             </div>
                         </div>
                         <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-purple-200">
-                            <div style="width:75%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-500"></div>
+                            <div style="width:75%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-500" id="business-progress-bar"></div>
                         </div>
-                        <div class="text-sm text-gray-600">
-                            Target Completion: June 30, 2024
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Target Completion:</span>
+                                <input type="date" class="border rounded p-1 text-sm" id="business-target-date" value="2024-06-30">
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium">Check-in Milestones</span>
+                                    <button class="text-purple-600 text-sm hover:text-purple-800" id="add-business-milestone">+ Add Milestone</button>
+                                </div>
+                                <div id="business-milestones" class="space-y-2">
+                                    <!-- Milestone entries will be added here -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -140,17 +153,30 @@ document.addEventListener('DOMContentLoaded', async function() {
                                     Progress
                                 </span>
                             </div>
-                            <div class="text-right">
-                                <span class="text-xs font-semibold inline-block text-purple-600">
+                            <div class="text-right flex items-center space-x-2">
+                                <input type="range" min="0" max="100" value="60" class="progress-slider" id="craft-progress-slider">
+                                <span class="text-xs font-semibold inline-block text-purple-600" id="craft-progress-text">
                                     60%
                                 </span>
                             </div>
                         </div>
                         <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-purple-200">
-                            <div style="width:60%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-500"></div>
+                            <div style="width:60%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-500" id="craft-progress-bar"></div>
                         </div>
-                        <div class="text-sm text-gray-600">
-                            Target Completion: July 31, 2024
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Target Completion:</span>
+                                <input type="date" class="border rounded p-1 text-sm" id="craft-target-date" value="2024-07-31">
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium">Check-in Milestones</span>
+                                    <button class="text-purple-600 text-sm hover:text-purple-800" id="add-craft-milestone">+ Add Milestone</button>
+                                </div>
+                                <div id="craft-milestones" class="space-y-2">
+                                    <!-- Milestone entries will be added here -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -559,4 +585,116 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Initialize goal updates when DOM is loaded
     initializeGoalUpdates();
+
+    // Add progress tracker functionality
+    function initializeProgressTrackers() {
+        // Helper function to create a milestone element
+        function createMilestoneElement(type, savedData = null) {
+            const div = document.createElement('div');
+            div.className = 'flex items-center space-x-2 milestone-entry';
+            
+            const date = savedData ? savedData.date : '';
+            const description = savedData ? savedData.description : '';
+            const completed = savedData ? savedData.completed : false;
+            
+            div.innerHTML = `
+                <input type="checkbox" class="rounded text-purple-600" ${completed ? 'checked' : ''}>
+                <input type="date" class="border rounded p-1 text-sm flex-shrink-0" value="${date}">
+                <input type="text" class="border rounded p-1 text-sm flex-grow" placeholder="Milestone description" value="${description}">
+                <button class="text-red-600 hover:text-red-800 text-sm delete-milestone">×</button>
+            `;
+
+            // Add event listeners for the milestone
+            const checkbox = div.querySelector('input[type="checkbox"]');
+            const dateInput = div.querySelector('input[type="date"]');
+            const descInput = div.querySelector('input[type="text"]');
+            const deleteBtn = div.querySelector('.delete-milestone');
+
+            // Save milestone data when any field changes
+            [checkbox, dateInput, descInput].forEach(input => {
+                input.addEventListener('change', () => saveMilestones(type));
+            });
+
+            // Delete milestone when delete button is clicked
+            deleteBtn.addEventListener('click', () => {
+                div.remove();
+                saveMilestones(type);
+            });
+
+            return div;
+        }
+
+        // Helper function to save milestones
+        function saveMilestones(type) {
+            const milestonesDiv = document.getElementById(`${type}-milestones`);
+            const milestones = Array.from(milestonesDiv.querySelectorAll('.milestone-entry')).map(milestone => ({
+                date: milestone.querySelector('input[type="date"]').value,
+                description: milestone.querySelector('input[type="text"]').value,
+                completed: milestone.querySelector('input[type="checkbox"]').checked
+            }));
+            localStorage.setItem(`${type}-milestones`, JSON.stringify(milestones));
+        }
+
+        // Helper function to load milestones
+        function loadMilestones(type) {
+            const savedMilestones = localStorage.getItem(`${type}-milestones`);
+            if (savedMilestones) {
+                const milestones = JSON.parse(savedMilestones);
+                const milestonesDiv = document.getElementById(`${type}-milestones`);
+                milestones.forEach(milestone => {
+                    milestonesDiv.appendChild(createMilestoneElement(type, milestone));
+                });
+            }
+        }
+
+        // Initialize progress trackers for both Business and Craft sections
+        ['business', 'craft'].forEach(type => {
+            const progressSlider = document.getElementById(`${type}-progress-slider`);
+            const progressText = document.getElementById(`${type}-progress-text`);
+            const progressBar = document.getElementById(`${type}-progress-bar`);
+            const targetDate = document.getElementById(`${type}-target-date`);
+            const addMilestoneBtn = document.getElementById(`add-${type}-milestone`);
+
+            // Load saved progress
+            const savedProgress = localStorage.getItem(`${type}-progress`);
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                progressSlider.value = progress.value;
+                progressText.textContent = `${progress.value}%`;
+                progressBar.style.width = `${progress.value}%`;
+            }
+
+            // Load saved target date
+            const savedDate = localStorage.getItem(`${type}-target-date`);
+            if (savedDate) {
+                targetDate.value = savedDate;
+            }
+
+            // Update progress when slider changes
+            progressSlider.addEventListener('input', () => {
+                const value = progressSlider.value;
+                progressText.textContent = `${value}%`;
+                progressBar.style.width = `${value}%`;
+                localStorage.setItem(`${type}-progress`, JSON.stringify({ value }));
+            });
+
+            // Save target date when changed
+            targetDate.addEventListener('change', () => {
+                localStorage.setItem(`${type}-target-date`, targetDate.value);
+            });
+
+            // Add new milestone when button is clicked
+            addMilestoneBtn.addEventListener('click', () => {
+                const milestonesDiv = document.getElementById(`${type}-milestones`);
+                milestonesDiv.appendChild(createMilestoneElement(type));
+                saveMilestones(type);
+            });
+
+            // Load saved milestones
+            loadMilestones(type);
+        });
+    }
+
+    // Initialize progress trackers when DOM is loaded
+    initializeProgressTrackers();
 }); 
