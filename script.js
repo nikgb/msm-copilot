@@ -66,8 +66,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="border-b pb-4">
                     <h3 class="font-medium mb-2">Current Focus Area</h3>
                     <div class="bg-purple-50 p-4 rounded">
-                        <p class="text-purple-800 font-medium">Drive Merchant Growth</p>
-                        <p class="text-sm text-purple-600 mt-2">Focus on increasing merchant GMV through strategic account planning and stakeholder management.</p>
+                        <p class="text-purple-800 font-medium" id="business-goal-text">Drive Merchant Growth</p>
+                        <p class="text-sm text-purple-600 mt-2" id="business-description-text">Focus on increasing merchant GMV through strategic account planning and stakeholder management.</p>
+                        <div class="mt-4">
+                            <textarea class="w-full p-2 border rounded text-gray-700 text-sm" rows="3" id="business-goal-input" placeholder="Update your goal here..."></textarea>
+                            <button class="mt-2 bg-purple-600 text-white px-4 py-2 rounded text-sm hover:bg-purple-700" id="save-business-goal">
+                                Save Goal
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="border-b pb-4">
@@ -115,8 +121,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="border-b pb-4">
                     <h3 class="font-medium mb-2">Current Focus Area</h3>
                     <div class="bg-purple-50 p-4 rounded">
-                        <p class="text-purple-800 font-medium">Strategic Discovery</p>
-                        <p class="text-sm text-purple-600 mt-2">Enhance discovery skills to better understand merchant needs and opportunities.</p>
+                        <p class="text-purple-800 font-medium" id="craft-goal-text">Strategic Discovery</p>
+                        <p class="text-sm text-purple-600 mt-2" id="craft-description-text">Enhance discovery skills to better understand merchant needs and opportunities.</p>
+                        <div class="mt-4">
+                            <textarea class="w-full p-2 border rounded text-gray-700 text-sm" rows="3" id="craft-goal-input" placeholder="Update your goal here..."></textarea>
+                            <button class="mt-2 bg-purple-600 text-white px-4 py-2 rounded text-sm hover:bg-purple-700" id="save-craft-goal">
+                                Save Goal
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -448,4 +460,80 @@ document.addEventListener('DOMContentLoaded', async function() {
             aiInput.addEventListener('input', saveFormData);
         }
     });
+
+    // Add goal update functionality
+    function initializeGoalUpdates() {
+        // Business 1 Thing goal updates
+        const saveBusinessGoal = document.getElementById('save-business-goal');
+        const businessGoalInput = document.getElementById('business-goal-input');
+        const businessGoalText = document.getElementById('business-goal-text');
+        const businessDescriptionText = document.getElementById('business-description-text');
+
+        if (saveBusinessGoal && businessGoalInput) {
+            // Load saved business goal if exists
+            const savedBusinessGoal = localStorage.getItem('business-goal');
+            if (savedBusinessGoal) {
+                const { title, description } = JSON.parse(savedBusinessGoal);
+                businessGoalText.textContent = title;
+                businessDescriptionText.textContent = description;
+                businessGoalInput.value = `${title}\n${description}`;
+            }
+
+            saveBusinessGoal.addEventListener('click', () => {
+                const inputText = businessGoalInput.value;
+                const [title, ...descriptionParts] = inputText.split('\n');
+                const description = descriptionParts.join('\n').trim();
+                
+                businessGoalText.textContent = title || 'Drive Merchant Growth';
+                businessDescriptionText.textContent = description || 'Focus on increasing merchant GMV through strategic account planning and stakeholder management.';
+                
+                localStorage.setItem('business-goal', JSON.stringify({ title, description }));
+                
+                // Show success message
+                const successMessage = document.createElement('div');
+                successMessage.className = 'text-green-600 text-sm mt-2';
+                successMessage.textContent = 'Goal updated successfully!';
+                saveBusinessGoal.parentNode.appendChild(successMessage);
+                setTimeout(() => successMessage.remove(), 2000);
+            });
+        }
+
+        // Craft 1 Thing goal updates
+        const saveCraftGoal = document.getElementById('save-craft-goal');
+        const craftGoalInput = document.getElementById('craft-goal-input');
+        const craftGoalText = document.getElementById('craft-goal-text');
+        const craftDescriptionText = document.getElementById('craft-description-text');
+
+        if (saveCraftGoal && craftGoalInput) {
+            // Load saved craft goal if exists
+            const savedCraftGoal = localStorage.getItem('craft-goal');
+            if (savedCraftGoal) {
+                const { title, description } = JSON.parse(savedCraftGoal);
+                craftGoalText.textContent = title;
+                craftDescriptionText.textContent = description;
+                craftGoalInput.value = `${title}\n${description}`;
+            }
+
+            saveCraftGoal.addEventListener('click', () => {
+                const inputText = craftGoalInput.value;
+                const [title, ...descriptionParts] = inputText.split('\n');
+                const description = descriptionParts.join('\n').trim();
+                
+                craftGoalText.textContent = title || 'Strategic Discovery';
+                craftDescriptionText.textContent = description || 'Enhance discovery skills to better understand merchant needs and opportunities.';
+                
+                localStorage.setItem('craft-goal', JSON.stringify({ title, description }));
+                
+                // Show success message
+                const successMessage = document.createElement('div');
+                successMessage.className = 'text-green-600 text-sm mt-2';
+                successMessage.textContent = 'Goal updated successfully!';
+                saveCraftGoal.parentNode.appendChild(successMessage);
+                setTimeout(() => successMessage.remove(), 2000);
+            });
+        }
+    }
+
+    // Initialize goal updates when DOM is loaded
+    initializeGoalUpdates();
 }); 
