@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 case 'Training & Updates':
                     trainingPanel.classList.remove('hidden');
                     break;
-                case 'Business Skills':
+                case 'Skills & Metrics':
                     pillarsSection.classList.remove('hidden');
                     break;
                 case 'Business 1 Thing':
@@ -228,9 +228,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                     break;
                 case 'Craft 1 Thing':
                     craftOneThingPanel.classList.remove('hidden');
-                    break;
-                case 'Craft Skills':
-                    pillarsSection.classList.remove('hidden');
                     break;
             }
         });
