@@ -1,5 +1,3 @@
-// MSM Co-Pilot Interactivity
-
 document.addEventListener('DOMContentLoaded', async function() {
     // Initialize credentials
     await MSMConfig.initializeCredentials();
