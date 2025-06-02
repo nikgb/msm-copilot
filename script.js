@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 case 'Training & Updates':
                     trainingPanel.classList.remove('hidden');
                     break;
-                case 'Skills & Metrics':
+                case 'Craft and Business Skills & Metrics':
                     pillarsSection.classList.remove('hidden');
                     break;
                 case 'Business 1 Thing':
